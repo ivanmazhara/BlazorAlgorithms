@@ -1,0 +1,15 @@
+﻿# Engine and Build Results
+[Bb]in/
+[Oo]bj/
+*.exe
+*.dll
+*.pdb
+
+# Rider and Visual Studio Configuration
+.idea/
+.vs/
+*.user
+*.suo
+
+# Local configuration files
+appsettings.Development.json
