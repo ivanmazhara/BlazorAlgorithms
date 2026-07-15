@@ -1,0 +1,122 @@
+﻿@page "/sorting"
+@using BlazorAlgorithms.utils
+@rendermode InteractiveServer
+
+<h1><b>Sorting Algorithms</b></h1>
+
+<p>Sorting algorithms are used to rearrange a given array or list of elements in an order. For example, a given array [10, 20, 5, 2] becomes [2, 5, 10, 20] after sorting in increasing order and becomes [20, 10, 5, 2] after sorting in decreasing order.
+</p>
+
+<h4>Sort-Check</h4>
+<input @bind="SortCheckInput" placeholder="Enter numbers (e.g., 1,2,3)" style="width: 250px;" />
+<button @onclick="RunSortCheck">Check</button>
+<p><strong>Result:</strong> @SortCheckMessage</p>
+
+@code {
+    private string SortCheckInput { get; set; } = "";
+    private string SortCheckMessage { get; set; } = "";
+
+    private void RunSortCheck()
+    {
+        var result = ArrayUtility.ParseArray(SortCheckInput);
+        if (result.Numbers == null)
+        {
+            SortCheckMessage = result.ErrorMessage;
+            return;
+        }
+
+        SortCheckMessage = IsSorted(result.Numbers) ? "The array is sorted!" : "The array is not sorted.";
+    }
+    
+    private static bool IsSorted(int[] arr)
+    {
+        for (int i = 0; i < arr.Length - 1; i++) {
+            if (arr[i] > arr[i + 1]) return false;
+        }
+        return true;
+    }
+}
+
+<h4>Bubble Sort</h4>
+<input @bind="BubbleSortInput" placeholder="Enter numbers (e.g., 1,2,3)" style="width: 250px;" />
+<button @onclick="RunBubbleSort">Sort</button>
+<p><strong>Sorted: </strong>@BubbleSortMessage</p>
+
+@code {
+    private string BubbleSortInput = "";
+    private string BubbleSortMessage = "";
+
+    private void RunBubbleSort()
+    {
+        var result = ArrayUtility.ParseArray(BubbleSortInput);
+        if (result.Numbers == null)
+        {
+            BubbleSortMessage = result.ErrorMessage;
+            return;
+        }
+
+        var watch = System.Diagnostics.Stopwatch.StartNew();
+        int[] sorted = BubbleSort(result.Numbers);
+        watch.Stop();
+        var elapsedMs = watch.Elapsed.TotalMilliseconds;
+        
+        BubbleSortMessage = "[" + string.Join(", ", sorted) + "]; " + $"\nExecuted in: {elapsedMs} ms."; 
+    }
+
+    private static int[] BubbleSort(int[] arr)
+    {
+        int stages = 0;
+        int temp;
+        for (int i = 0; i < arr.Length; i++) {
+            for (int j = 0; j < arr.Length - 1; j++) {
+                if(arr[j+1] < arr[j]){
+                    temp = arr[j+1];
+                    arr[j+1] = arr[j];
+                    arr[j] = temp;
+                }
+            }
+        }
+        return arr;
+    }
+}
+
+<h4>Selection Sort</h4>
+<input @bind="SelectionSortInput" placeholder="Enter numbers (e.g., 1,2,3)" style="width: 250px;" />
+<button @onclick="RunSelectionSort">Sort</button>
+<p><strong>Sorted: </strong>@SelectionSortMessage</p>
+
+@code {
+    private string SelectionSortInput = "";
+    private string SelectionSortMessage = "";
+    
+    private void RunSelectionSort()
+    {
+        var result = ArrayUtility.ParseArray(BubbleSortInput);
+        if (result.Numbers == null)
+        {
+            SelectionSortMessage = result.ErrorMessage;
+            return;
+        }
+
+        var watch = System.Diagnostics.Stopwatch.StartNew();
+        int[] sorted = SelectionSort(result.Numbers);
+        watch.Stop();
+        var elapsedMs = watch.Elapsed.TotalMilliseconds;
+        
+        SelectionSortMessage = "[" + string.Join(", ", sorted) + "]; " + $"\nExecuted in: {elapsedMs} ms."; 
+    }
+    
+    public static int[] SelectionSort(int[] arr) 
+    {
+        for (int i = 0; i < arr.Length - 1; i++) {
+            int minIndex = i;
+            for (int j = i + 1; j < arr.Length; j++) {
+                if (arr[j] < arr[minIndex]) {
+                    minIndex = j;
+                }
+            }
+            (arr[i], arr[minIndex]) = (arr[minIndex], arr[i]);
+        }
+        return arr;
+    }
+}

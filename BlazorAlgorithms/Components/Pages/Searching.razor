@@ -1,0 +1,90 @@
+﻿@page "/searching"
+@using BlazorAlgorithms.utils
+@rendermode InteractiveServer
+
+<h1><b>Searching Algorithms</b></h1>
+
+<p>Searching algorithms are used to locate specific item(s) within a collection of data.</p>
+
+<h4>Linear Search</h4>
+<input @bind="LinSearchArrayInput" placeholder="Enter numbers (e.g., 1,2,3)" style="width: 250px;" />
+<input @bind="LinSearchKeyInput" placeholder="" style="width: 30px;" />
+<button @onclick="RunLinSearch">Search</button>
+<p><strong>Result:</strong> @LinSearchMessage</p>
+
+@code {
+    private string LinSearchArrayInput { get; set; }  = "";
+    private int LinSearchKeyInput { get; set; } = 0;
+    private string LinSearchMessage = "";
+
+    private void RunLinSearch()
+    {
+        var result = ArrayUtility.ParseArray(LinSearchArrayInput);
+        
+        if (result.Numbers == null)
+        {
+            LinSearchMessage = result.ErrorMessage;
+            return;
+        }
+        
+        int index = LinSearch(result.Numbers, LinSearchKeyInput);
+        LinSearchMessage = index == -1 
+            ? "Element not found." 
+            : $"Element found at index {index}.";
+    }
+
+    private static int LinSearch(int[] arr, int key)
+    {
+        for (int i = 0; i < arr.Length; i++)
+        {
+            if (arr[i] == key) return i;
+        }
+        return -1;
+    }
+}
+
+<h4>Binary Search</h4>
+<p><i>Warning: Should only be used on a sorted collection!</i></p>
+<input @bind="BinSearchArrayInput" placeholder="Enter numbers (e.g., 1,2,3)" style="width: 250px;" />
+<input @bind="BinSearchKeyInput" placeholder="" style="width: 30px;" />
+<button @onclick="RunBinSearch">Search</button>
+<p><strong>Result:</strong> @BinSearchMessage</p>
+
+@code {
+    private string BinSearchArrayInput { get; set; }  = "";
+    private int BinSearchKeyInput { get; set; } = 0;
+    private string BinSearchMessage = "";
+
+    private void RunBinSearch()
+    {
+        var result = ArrayUtility.ParseArray(BinSearchArrayInput);
+        if (result.Numbers == null)
+        {
+            BinSearchMessage = result.ErrorMessage;
+            return;
+        }
+        
+        int index = BinSearch(result.Numbers, BinSearchKeyInput);
+        BinSearchMessage = index == -1 
+            ? "Element not found." 
+            : $"Element found at index {index}.";
+    }
+
+    private static int BinSearch(int[] arr, int key)
+    {
+        int l = arr[0];
+        int r = arr.Length-1;
+        int m = l + (r - l)/2;
+        
+        while(l<=r){
+            if (arr[m] < key) {
+                l = m + 1;
+                m = l + (r - l) / 2;
+            } else if (arr[m] > key) {
+                r = m - 1;
+                m = l + (r - l) / 2;
+            } else if (arr[m] == key) return m;
+        }
+        return -1;
+    }
+}
