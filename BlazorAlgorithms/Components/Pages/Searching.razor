@@ -28,10 +28,13 @@ BIn @using System.Diagnostics
             return;
         }
         
+        var watch = System.Diagnostics.Stopwatch.StartNew();
         int index = LinSearch(result.Numbers, LinSearchKeyInput);
+        watch.Stop();
+        var elapsedMs = watch.Elapsed.TotalMilliseconds;
         LinSearchMessage = index == -1 
             ? "Element not found." 
-            : $"Element found at index {index}.";
+            : $"Element found at index {index}." + $"\nExecuted in: {elapsedMs} ms.";;
     }
 
     private static int LinSearch(int[] arr, int key)
