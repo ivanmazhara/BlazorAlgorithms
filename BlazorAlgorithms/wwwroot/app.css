@@ -58,3 +58,40 @@ h1:focus {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+/* Algorithm-Table Styling */
+.algo-table {
+    width: 70%;
+    text-align: left;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.algo-table th {
+    padding: 8px;
+    border-bottom: 2px solid #ccc;
+    background-color: #f8f9fa;
+}
+
+.algo-table td {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+.algo-array-cell {
+    font-family: monospace;
+    font-size: 1.1em;
+}
+
+.algo-element {
+    padding: 2px 6px;
+    margin-right: 4px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.algo-element.active {
+    background-color: #ffeb3b;
+    font-weight: bold;
+    color: #000;
+}
