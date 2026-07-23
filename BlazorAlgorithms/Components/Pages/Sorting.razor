@@ -43,10 +43,47 @@
 <button @onclick="RunBubbleSort">Sort</button>
 <p><strong>Sorted: </strong>@BubbleSortMessage</p>
 
+@if (BubbleSortHistory != null && BubbleSortHistory.Any())
+{
+    <table class="algo-table">
+        <thead>
+        <tr>
+            <th>Step</th>
+            <th>Outer (i)</th>
+            <th>Inner (j)</th>
+            <th>Array State</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var step in BubbleSortHistory)
+        {
+            <tr>
+                <td>@step.iteration</td>
+                <td>@step.i</td>
+                <td>@step.j</td>
+                <td class="algo-array-cell">
+
+                    @for (int index = 0; index < step.arr.Length; index++)
+                    {
+                        bool isActive = (index == step.j || index == step.j + 1);
+                        
+                        <span class="algo-element @(isActive ? "active" : "")">
+                                @step.arr[index]
+                            </span>
+                    }
+
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
 @code {
     private string BubbleSortInput = "";
     private string BubbleSortMessage = "";
-
+    private List<BubbleSortStep> BubbleSortHistory = new();
+    
     private void RunBubbleSort()
     {
         var result = ArrayUtility.ParseArray(BubbleSortInput);
@@ -56,17 +93,22 @@
             return;
         }
 
+        int[] benchmarkArray = result.Numbers.ToArray();
+        
         var watch = System.Diagnostics.Stopwatch.StartNew();
-        int[] sorted = BubbleSort(result.Numbers);
+        int[] sorted = BubbleSort(benchmarkArray);
         watch.Stop();
         var elapsedMs = watch.Elapsed.TotalMilliseconds;
+
+        BubbleSortHistory = HistoryBubbleSort(result.Numbers);
         
         BubbleSortMessage = "[" + string.Join(", ", sorted) + "]; " + $"\nExecuted in: {elapsedMs} ms."; 
     }
 
+    private record BubbleSortStep(int iteration, int[] arr, int i, int j);
+
     private static int[] BubbleSort(int[] arr)
     {
-        int stages = 0;
         int temp;
         for (int i = 0; i < arr.Length; i++) {
             for (int j = 0; j < arr.Length - 1; j++) {
@@ -78,6 +120,30 @@
             }
         }
         return arr;
+    }
+    
+    private static List<BubbleSortStep> HistoryBubbleSort(int[] arr)
+    {
+        var history = new List<BubbleSortStep>();
+        
+        int[] workArray = arr.ToArray();
+        int stages = 0;
+        int temp;
+        
+        for (int i = 0; i < workArray.Length; i++) {
+            for (int j = 0; j < workArray.Length - 1; j++) {
+                if(workArray[j+1] < workArray[j]){
+                    temp = workArray[j+1];
+                    workArray[j+1] = workArray[j];
+                    workArray[j] = temp;
+                }
+                
+                history.Add(new BubbleSortStep(stages, workArray.ToArray(), i, j));
+                stages++;
+            }
+        }
+
+        return history;
     }
 }
 
