@@ -152,9 +152,49 @@
 <button @onclick="RunSelectionSort">Sort</button>
 <p><strong>Sorted: </strong>@SelectionSortMessage</p>
 
+@if (SelectionSortHistory != null && SelectionSortHistory.Any())
+{
+
+    <table class="algo-table">
+        <thead>
+        <tr>
+            <th>Step</th>
+            <th>Outer (i)</th>
+            <th>Inner (j)</th>
+            <th>Minimal Element Index</th>
+            <th>Array State</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var step in SelectionSortHistory)
+        {
+            <tr>
+                <td>@step.iteration</td>
+                <td>@step.i</td>
+                <td>@step.j</td>
+                <td>@step.minIndex</td>
+                <td class="algo-array-cell">
+                    @for (int index = 0; index < step.arr.Length; index++)
+                    {
+                        bool isActive = (index == step.j || index == step.minIndex);
+
+                        bool isSorted = index < step.i;
+
+                        <span class="algo-element @(isActive ? "active" : "")" style="@(isSorted ? "color: #aaa;" : "")">
+                            @step.arr[index]
+                        </span>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
 @code {
     private string SelectionSortInput = "";
     private string SelectionSortMessage = "";
+    private List<SelectionSortStep> SelectionSortHistory = new();
     
     private void RunSelectionSort()
     {
@@ -165,11 +205,14 @@
             return;
         }
 
+        int[] benchmarkArray = result.Numbers.ToArray();
+        
         var watch = System.Diagnostics.Stopwatch.StartNew();
-        int[] sorted = SelectionSort(result.Numbers);
+        int[] sorted = SelectionSort(benchmarkArray);
         watch.Stop();
         var elapsedMs = watch.Elapsed.TotalMilliseconds;
         
+        SelectionSortHistory = HistorySelectionSort(result.Numbers);
         SelectionSortMessage = "[" + string.Join(", ", sorted) + "]; " + $"\nExecuted in: {elapsedMs} ms."; 
     }
     
@@ -185,6 +228,34 @@
             (arr[i], arr[minIndex]) = (arr[minIndex], arr[i]);
         }
         return arr;
+    }
+
+    private record SelectionSortStep(int iteration, int[] arr, int i, int j, int minIndex);
+    private List<SelectionSortStep> HistorySelectionSort(int[] arr)
+    {
+        var history = new List<SelectionSortStep>();
+    
+        int[] workArray = arr.ToArray();
+        int stages = 0;
+        
+        for (int i = 0; i < workArray.Length - 1; i++) {
+            int minIndex = i;
+        
+            for (int j = i + 1; j < workArray.Length; j++) {
+                if (workArray[j] < workArray[minIndex]) {
+                    minIndex = j;
+                }
+                
+                history.Add(new SelectionSortStep(stages, workArray.ToArray(), i, j, minIndex));
+                stages++;
+            }
+
+            (workArray[i], workArray[minIndex]) = (workArray[minIndex], workArray[i]);
+            history.Add(new SelectionSortStep(stages, workArray.ToArray(), i, i, minIndex));
+            stages++;
+        }
+    
+        return history;
     }
 }
 
