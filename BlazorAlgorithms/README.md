@@ -4,8 +4,9 @@ A web-based application built with Blazor and .NET 8 to visualize, test, and com
 
 ## Features
 * **Sort Checking:** Quickly verify if an array of integers is sorted in ascending order.
-* **Sorting Algorithms:** Includes implementations of Bubble Sort and Selection Sort.
-* **Performance Benchmarking:** Uses C# `Stopwatch` to measure and display algorithm execution times down to the millisecond.
+* **Sorting Algorithms:** Includes implementations of Bubble Sort, Selection Sort and Insertion Sort.
+* **Searching Algorithms:** Includes implementations of Linear Search and Binary Search.
+* **Performance Benchmarking:** Uses C# `Stopwatch` to measure and display algorithm execution times down to the millisecond. Also uses `Record` to track the whole process of algorithm step-by-step visualised.
 * **Input Validation:** Safely handles empty inputs, incorrect formats, and overflow exceptions using a centralized `ArrayUtility` parser.
 
 ## Tech Stack
